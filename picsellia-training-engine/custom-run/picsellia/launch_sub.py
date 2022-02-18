@@ -48,7 +48,7 @@ buffer_length = 0
 experiment.send_experiment_logging(part, part)
 
 last_line = ""
-f = open('{}-logs.txt'.format(experiment.run["experiment"]["id"]), 'w')
+f = open('{}-logs.txt'.format(experiment.id), 'w')
 while True:
     output = process.stdout.readline()
     if output.decode("utf-8")  == '' and process.poll() is not None:

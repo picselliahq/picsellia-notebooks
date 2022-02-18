@@ -25,15 +25,16 @@ client = Client(
     api_token=api_token,
     host=host
 )
+
 if "experiment_id" in os.environ:
     experiment_id = os.environ['experiment_id']
-    experiment = client.get_experiment_by_id(id=experiment_id, tree=True, with_file=True)
+    experiment = client.get_experiment_by_id(experiment_id, tree=True, with_artifacts=True)
 else:
     if "experiment_name" in os.environ and "project_token" in os.environ:
         project_token = os.environ['project_token']
         experiment_name = os.environ['experiment_name']
-        project = client.get_project_by_id(id=project_token)
-        experiment = project.get_experiment(experiment_name, tree=True, with_file=True)
+        project = client.get_project_by_id(project_token)
+        experiment = project.get_experiment(experiment_name, tree=True, with_artifacts=True)
     else:
         raise AuthenticationError("You must either set the experiment id or the project token + experiment_name")
 
