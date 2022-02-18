@@ -11,7 +11,7 @@ if 'api_token' not in os.environ:
 api_token = os.environ["api_token"]
 
 if "host" not in os.environ:
-    host = "https://app.picsellia.com/sdk/v2/"
+    host = "https://app.picsellia.com/sdk/v1"
 else:
     host = os.environ["host"]
 
@@ -22,43 +22,44 @@ client = Client(
 
 if "experiment_id" in os.environ:
     experiment_id = os.environ['experiment_id']
-    experiment = client.get_experiment_by_id(id=experiment_id, tree=True, with_file=True)
+    experiment = client.get_experiment_by_id(experiment_id, tree=True, with_artifacts=True)
 else:
     if "experiment_name" in os.environ and "project_token" in os.environ:
         project_token = os.environ['project_token']
         experiment_name = os.environ['experiment_name']
-        project = client.get_project_by_id(id=project_token)
-        experiment = project.get_experiment(experiment_name, tree=True, with_file=True)
+        project = client.get_project_by_id(project_token)
+        experiment = project.get_experiment(experiment_name, tree=True, with_artifacts=True)
     else:
         raise AuthenticationError("You must either set the experiment id or the project token + experiment_name")
 
-experiment.dl_annotations()
-experiment.dl_pictures()
+experiment.download_annotations()
+experiment.download_pictures()
 experiment.generate_labelmap()
 experiment.log('labelmap', experiment.label_map, 'labelmap', replace=True)
-experiment.train_test_split()
+train_list, eval_list, train_list_id, eval_list_id, label_train, label_eval, categories = experiment.train_test_split()
 
 train_split = {
-    'x': experiment.categories,
-    'y': experiment.train_repartition,
-    'image_list': experiment.train_list_id
+    'x': categories,
+    'y': label_train,
+    'image_list': train_list_id
 }
 experiment.log('train-split', train_split, 'bar', replace=True)
 
 test_split = {
-    'x': experiment.categories,
-    'y': experiment.test_repartition,
-    'image_list': experiment.eval_list_id
+    'x': categories,
+    'y': label_eval,
+    'image_list': eval_list_id
 }
 experiment.log('test-split', test_split, 'bar', replace=True)
 parameters = experiment.get_log(name='parameters')
+
 experiment.start_logging_chapter('Create records')
 pxl_utils.create_record_files(
         dict_annotations=experiment.dict_annotations, 
-        train_list=experiment.train_list, 
-        train_list_id=experiment.train_list_id, 
-        eval_list=experiment.eval_list, 
-        eval_list_id=experiment.eval_list_id,
+        train_list=train_list, 
+        train_list_id=train_list_id, 
+        eval_list=eval_list, 
+        eval_list_id=eval_list_id,
         label_path=experiment.label_path, 
         record_dir=experiment.record_dir, 
         tfExample_generator=pxl_tf.tf_vars_generator, 
@@ -148,4 +149,3 @@ for variable in logs.keys():
     experiment.log('-'.join(variable.split('/')), data, 'line', replace=True)
     
 experiment.log('metrics', metrics, 'table', replace=True)
-

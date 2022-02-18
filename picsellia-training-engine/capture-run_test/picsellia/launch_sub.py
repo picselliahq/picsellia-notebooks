@@ -10,10 +10,10 @@ from picsellia.exceptions import AuthenticationError
 from datetime import date, datetime
 import json
 
-host = 'http://127.0.0.1:8000/sdk/v2/'
+host = 'https://pipelinesv2.picsellia.com/sdk/v1'
 
-api_token = 'ac7a44b7be181774bd088c0099afd449b26bbeb7'
-project_token = '3d039f84-7224-4442-b499-652f2f77f1a1'
+api_token = '35fc323da9b51dcb1f2339988afc33746ac99aee'
+project_token = '6954f5d3-ef7d-455b-a2fe-7d6dcb39ea1c'
 experiment_name = "test2"
 client = Client(api_token=api_token, host=host)
 project = client.get_project_by_id(project_token)
