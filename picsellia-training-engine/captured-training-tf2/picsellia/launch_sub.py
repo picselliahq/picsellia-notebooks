@@ -7,7 +7,7 @@ import json
 os.environ["PYTHONUNBUFFERED"] = "1"
 os.chdir('picsellia')
 from datetime import datetime
-from picsellia.pxl_exceptions import AuthenticationError
+from picsellia.exceptions import AuthenticationError
 
 command = "python3 docker_run_training_tf2.py"
 if "host" not in os.environ:

@@ -6,7 +6,7 @@ import re
 os.environ["PYTHONUNBUFFERED"] = "1"
 os.chdir('picsellia')
 import sys
-from picsellia.pxl_exceptions import AuthenticationError
+from picsellia.exceptions import AuthenticationError
 
 # host = 'http://127.0.0.1:8000/sdk/v2/'
 if 'api_token' not in os.environ:

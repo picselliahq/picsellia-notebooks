@@ -8,7 +8,7 @@ import os
 import subprocess 
 import yaml 
 import torch
-from picsellia.pxl_exceptions import AuthenticationError
+from picsellia.exceptions import AuthenticationError
 
 os.chdir('picsellia')
 if 'api_token' not in os.environ:

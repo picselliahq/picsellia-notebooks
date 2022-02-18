@@ -6,7 +6,7 @@ import re
 os.environ["PYTHONUNBUFFERED"] = "1"
 os.chdir('picsellia')
 import sys
-from picsellia.pxl_exceptions import AuthenticationError
+from picsellia.exceptions import AuthenticationError
 from datetime import date, datetime
 import json
 

@@ -6,7 +6,7 @@ import re
 os.environ["PYTHONUNBUFFERED"] = "1"
 os.chdir('picsellia')
 import sys
-from picsellia.pxl_exceptions import AuthenticationError
+from picsellia.exceptions import AuthenticationError
 
 if 'api_token' not in os.environ:
     raise AuthenticationError("You must set an api_token to run this image")
