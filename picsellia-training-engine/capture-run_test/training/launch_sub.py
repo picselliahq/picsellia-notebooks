@@ -4,7 +4,7 @@ from picsellia import Client
 import os
 import re 
 os.environ["PYTHONUNBUFFERED"] = "1"
-os.chdir('picsellia')
+os.chdir('training')
 import sys
 from picsellia.exceptions import AuthenticationError
 from datetime import date, datetime

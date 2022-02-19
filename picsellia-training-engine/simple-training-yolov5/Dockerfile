@@ -15,9 +15,9 @@ ARG REBUILD_PICSELLIA
 RUN pip3 install --no-cache-dir picsellia
 
 ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/usr/local/cuda/lib:/usr/local/cuda/lib64
-COPY ./picsellia /picsellia
+COPY ./training /training
 
-CMD ["/picsellia/docker_run_training_yolov5.py"]
+CMD ["/training/docker_run_training_yolov5.py"]
 ENTRYPOINT ["python3"]
 COPY . .
-RUN chown -R 42420:42420 /picsellia
+RUN chown -R 42420:42420 /training

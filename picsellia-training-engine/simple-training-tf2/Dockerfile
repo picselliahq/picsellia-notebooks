@@ -11,16 +11,16 @@ RUN pip3 install -U setuptools
 COPY ./requirements.txt .
 ARG REBUILD_ALL
 RUN pip3 install -r requirements.txt --no-cache-dir
-ARG REBUILD_PICSELLIA
-RUN pip3 install --no-cache-dir picsellia
 RUN pip3 install tensorflow==2.6.0
 RUN pip3 install keras==2.6.0
+ARG REBUILD_PICSELLIA
+RUN pip3 install --extra-index-url https://pypi.org/simple/ --index-url https://test.pypi.org/simple/ picsellia==5.0.32
 RUN pip3 install --upgrade numpy
 ENV PATH=$PATH:/usr/local/cuda/bin
 ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/usr/local/cuda/lib:/usr/local/cuda/lib64
-COPY ./picsellia /picsellia
+COPY ./training /training
 
-CMD ["/picsellia/docker_run_training_tf2.py"]
+CMD ["/training/docker_run_training_tf2.py"]
 ENTRYPOINT ["python3"]
 COPY . .
-RUN chown -R 42420:42420 /picsellia
+RUN chown -R 42420:42420 /training

@@ -5,13 +5,13 @@ import os
 import re 
 import json
 os.environ["PYTHONUNBUFFERED"] = "1"
-os.chdir('picsellia')
+os.chdir('training')
 from datetime import datetime
 from picsellia.exceptions import AuthenticationError
 
 command = "python3 docker_run_training_tf2.py"
 if "host" not in os.environ:
-    host = "https://app.picsellia.com/sdk/v2/"
+    host = "https://app.picsellia.com/sdk/v1/"
 else:
     host = os.environ["host"]
 if 'api_token' not in os.environ:
@@ -24,13 +24,13 @@ client = Client(
 )
 if "experiment_id" in os.environ:
     experiment_id = os.environ['experiment_id']
-    experiment = client.get_experiment_by_id(experiment_id, tree=True, with_artifacts=True)
+    experiment = client.get_experiment_by_id(experiment_id)
 else:
     if "experiment_name" in os.environ and "project_token" in os.environ:
         project_token = os.environ["project_token"]
         experiment_name = os.environ["experiment_name"]
         project = client.get_project_by_id(project_token)
-        experiment = project.get_experiment(experiment_name, tree=True, with_artifacts=True)
+        experiment = project.get_experiment(experiment_name)
     else:
         raise AuthenticationError("You must either set the experiment id or the project token + experiment_name")
 

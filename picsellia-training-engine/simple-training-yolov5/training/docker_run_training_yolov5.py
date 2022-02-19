@@ -10,7 +10,7 @@ import yaml
 import torch
 from picsellia.exceptions import AuthenticationError
 
-os.chdir('picsellia')
+os.chdir('training')
 if 'api_token' not in os.environ:
     raise AuthenticationError("You must set an api_token to run this image")
 
