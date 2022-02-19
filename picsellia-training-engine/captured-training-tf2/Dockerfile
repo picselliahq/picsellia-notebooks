@@ -15,7 +15,7 @@ RUN pip3 install -r requirements.txt --no-cache-dir
 RUN pip3 install tensorflow==2.6.0
 RUN pip3 install keras==2.6.0
 ARG REBUILD_PICSELLIA
-RUN pip3 install --extra-index-url https://pypi.org/simple/ --index-url https://test.pypi.org/simple/ picsellia==5.0.32
+RUN pip3 install --extra-index-url https://pypi.org/simple/ --index-url https://test.pypi.org/simple/ picsellia==5.0.34
 RUN pip3 install --upgrade numpy
 ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/usr/local/cuda/lib:/usr/local/cuda/lib64
 COPY ./training /training

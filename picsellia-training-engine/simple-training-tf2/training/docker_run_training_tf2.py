@@ -3,38 +3,53 @@ from picsellia import Client
 from picsellia.exceptions import AuthenticationError
 from picsellia_tf2 import pxl_utils
 from picsellia_tf2 import pxl_tf
-os.chdir('training')
+# os.chdir('training')
 
-if 'api_token' not in os.environ:
-    raise AuthenticationError("You must set an api_token to run this image")
+# if 'api_token' not in os.environ:
+#     raise AuthenticationError("You must set an api_token to run this image")
 
-api_token = os.environ['api_token']
+# api_token = os.environ['api_token']
 
 
-if "host" not in os.environ:
-    host = "https://app.picsellia.com/sdk/v1"
-else:
-    host = os.environ["host"]
+# if "host" not in os.environ:
+#     host = "https://app.picsellia.com/sdk/v1"
+# else:
+#     host = os.environ["host"]
 
+# client = Client(
+#     api_token=api_token,
+#     host=host
+# )
+# if "experiment_id" in os.environ:
+#     experiment_id = os.environ['experiment_id']
+#     experiment = client.get_experiment_by_id(experiment_id, tree=True, with_artifacts=True)
+# else:
+#     if "experiment_name" in os.environ and "project_token" in os.environ:
+#         project_token = os.environ["project_token"]
+#         experiment_name = os.environ["experiment_name"]
+#         project = client.get_project_by_id(project_token)
+#         experiment = project.get_experiment(experiment_name, tree=True, with_artifacts=True)
+#     else:
+#         raise AuthenticationError("You must either set the experiment id or the project token + experiment_name")
+
+api_token = "35fc323da9b51dcb1f2339988afc33746ac99aee"
+host = "https://pipelinesv2.picsellia.com/sdk/v1"
 client = Client(
     api_token=api_token,
     host=host
 )
-if "experiment_id" in os.environ:
-    experiment_id = os.environ['experiment_id']
-    experiment = client.get_experiment_by_id(experiment_id, tree=True, with_artifacts=True)
-else:
-    if "experiment_name" in os.environ and "project_token" in os.environ:
-        project_token = os.environ["project_token"]
-        experiment_name = os.environ["experiment_name"]
-        project = client.get_project_by_id(project_token)
-        experiment = project.get_experiment(experiment_name, tree=True, with_artifacts=True)
-    else:
-        raise AuthenticationError("You must either set the experiment id or the project token + experiment_name")
+project_token = "e28500ed-75f2-4992-904e-191cb0a19c4e"
+experiment_name = "approximate-pattern_3"
+project = client.get_project_by_id(project_token)
+experiment = project.get_experiment(experiment_name, tree=True, with_artifacts=True)
+
+
 
 experiment.download_annotations()
 experiment.download_pictures()
 experiment.generate_labelmap()
+print(experiment.label_map)
+print(experiment.dict_annotations["categories"])
 experiment.log('labelmap', experiment.label_map, 'labelmap', replace=True)
 train_list, eval_list, train_list_id, eval_list_id, label_train, label_eval, categories = experiment.train_test_split()
 
