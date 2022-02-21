@@ -108,11 +108,25 @@ experiment.store('config')
 experiment.store('checkpoint-data-latest')
 experiment.store('checkpoint-index-latest')
 
+experiment.start_logging_chapter('Send to picsellia')
+
+metrics = pxl_utils.tf_events_to_dict('{}/metrics'.format(experiment.name), 'eval')
+logs = pxl_utils.tf_events_to_dict('{}/checkpoint'.format(experiment.name), 'train')
+
+for variable in logs.keys():
+    data = {
+        'steps': logs[variable]["steps"],
+        'values': logs[variable]["values"]
+    }
+    experiment.log('-'.join(variable.split('/')), data, 'line', replace=True)
+    
+experiment.log('metrics', metrics, 'table', replace=True)
+
 conf, eval = pxl_utils.get_confusion_matrix(
     input_tfrecord_path=os.path.join(experiment.record_dir, 'eval.record'),
     model=os.path.join(experiment.exported_model_dir, 'saved_model'),
     labelmap=experiment.label_map
-    )
+)
 
 
 confusion = {
@@ -136,16 +150,4 @@ pxl_utils.infer(
     disp=False
     )
 
-experiment.start_logging_chapter('Send to picsellia')
 
-metrics = pxl_utils.tf_events_to_dict('{}/metrics'.format(experiment.name), 'eval')
-logs = pxl_utils.tf_events_to_dict('{}/checkpoint'.format(experiment.name), 'train')
-
-for variable in logs.keys():
-    data = {
-        'steps': logs[variable]["steps"],
-        'values': logs[variable]["values"]
-    }
-    experiment.log('-'.join(variable.split('/')), data, 'line', replace=True)
-    
-experiment.log('metrics', metrics, 'table', replace=True)
