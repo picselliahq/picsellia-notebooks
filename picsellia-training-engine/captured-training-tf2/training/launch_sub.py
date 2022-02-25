@@ -5,13 +5,21 @@ import os
 import re 
 import json
 os.environ["PYTHONUNBUFFERED"] = "1"
+os.environ["PICSELLIA_SDK_DOWNLOAD_BAR_MODE"] = "2"
+os.environ['PICSELLIA_SDK_CUSTOM_LOGGING'] = "True" 
+
 os.chdir('training')
 from datetime import datetime
 from picsellia.exceptions import AuthenticationError
 
+import logging
+
+logging.getLogger('picsellia').setLevel(logging.INFO)
+
 command = "python3 docker_run_training_tf2.py"
+
 if "host" not in os.environ:
-    host = "https://app.picsellia.com/sdk/v1/"
+    host = "https://app.picsellia.com/sdk/v1"
 else:
     host = os.environ["host"]
 if 'api_token' not in os.environ:
@@ -22,17 +30,18 @@ client = Client(
     api_token=api_token,
     host=host
 )
-if "experiment_id" in os.environ:
-    experiment_id = os.environ['experiment_id']
-    experiment = client.get_experiment_by_id(experiment_id)
-else:
-    if "experiment_name" in os.environ and "project_token" in os.environ:
+
+if "experiment_name" in os.environ:
+    experiment_name = os.environ["experiment_name"]
+    if "project_token" in os.environ:
         project_token = os.environ["project_token"]
-        experiment_name = os.environ["experiment_name"]
         project = client.get_project_by_id(project_token)
-        experiment = project.get_experiment(experiment_name)
-    else:
-        raise AuthenticationError("You must either set the experiment id or the project token + experiment_name")
+    elif "project_name" in os.environ:
+        project_name = os.environ["project_name"]
+        project = client.get_project(project_name)
+    experiment = project.get_experiment(experiment_name)
+else:
+    raise AuthenticationError("You must set the project_token or project_name and experiment_name")
 
 
 process = subprocess.Popen(shlex.split(command), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)

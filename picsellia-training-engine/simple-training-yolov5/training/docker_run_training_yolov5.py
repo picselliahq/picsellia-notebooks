@@ -2,13 +2,12 @@ from picsellia import Client
 from picsellia_yolov5.utils import to_yolo, find_matching_annotations, edit_model_yaml, generate_yaml, Opt, setup_hyp
 from picsellia_yolov5.utils import send_run_to_picsellia
 from picsellia_yolov5.yolov5.train import train
-import argparse 
-import sys
 import os 
-import subprocess 
-import yaml 
-import torch
 from picsellia.exceptions import AuthenticationError
+
+os.environ["PYTHONUNBUFFERED"] = "1"
+os.environ["PICSELLIA_SDK_DOWNLOAD_BAR_MODE"] = "2"
+os.environ['PICSELLIA_SDK_CUSTOM_LOGGING'] = "True" 
 
 os.chdir('training')
 if 'api_token' not in os.environ:
@@ -17,7 +16,7 @@ if 'api_token' not in os.environ:
 api_token = os.environ['api_token']
 
 if "host" not in os.environ:
-    host = "https://app.picsellia.com/sdk/v2/"
+    host = "https://app.picsellia.com/sdk/v1"
 else:
     host = os.environ["host"]
 
@@ -38,8 +37,8 @@ else:
     else:
         raise AuthenticationError("You must either set the experiment id or the project token + experiment_name")
 
-experiment.dl_annotations()
-experiment.dl_pictures()
+experiment.download_annotations()
+experiment.download_pictures()
 experiment.generate_labelmap()
 experiment.log('labelmap', experiment.label_map, 'labelmap', replace=True)
 
